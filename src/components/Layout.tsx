@@ -1,7 +1,10 @@
+import { useState, useRef, useEffect } from "react"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
 import { Button } from "@/components/ui/button"
 import { Bell, Search, User } from "lucide-react"
+import { NotificationDropdown } from "@/components/NotificationDropdown"
+import { SearchBar } from "@/components/SearchBar"
 
 interface LayoutProps {
   children: React.ReactNode
@@ -9,6 +12,26 @@ interface LayoutProps {
 }
 
 export function Layout({ children, title }: LayoutProps) {
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [showSearch, setShowSearch] = useState(false)
+  const notificationRef = useRef<HTMLDivElement>(null)
+  const searchRef = useRef<HTMLDivElement>(null)
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false)
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSearch(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
@@ -28,13 +51,43 @@ export function Layout({ children, title }: LayoutProps) {
               </div>
 
               <div className="flex items-center gap-3">
-                <Button variant="ghost" size="icon" className="relative">
-                  <Search className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon" className="relative">
-                  <Bell className="h-4 w-4" />
-                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-destructive rounded-full"></span>
-                </Button>
+                <div ref={searchRef} className="relative">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="relative"
+                    onClick={() => {
+                      setShowSearch(!showSearch)
+                      setShowNotifications(false)
+                    }}
+                  >
+                    <Search className="h-4 w-4" />
+                  </Button>
+                  <SearchBar 
+                    isOpen={showSearch} 
+                    onClose={() => setShowSearch(false)} 
+                  />
+                </div>
+                
+                <div ref={notificationRef} className="relative">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="relative"
+                    onClick={() => {
+                      setShowNotifications(!showNotifications)
+                      setShowSearch(false)
+                    }}
+                  >
+                    <Bell className="h-4 w-4" />
+                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-destructive rounded-full"></span>
+                  </Button>
+                  <NotificationDropdown 
+                    isOpen={showNotifications} 
+                    onClose={() => setShowNotifications(false)} 
+                  />
+                </div>
+                
                 <Button variant="ghost" size="icon">
                   <User className="h-4 w-4" />
                 </Button>

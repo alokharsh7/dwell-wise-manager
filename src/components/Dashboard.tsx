@@ -1,4 +1,5 @@
 import { Bed, Users, UserCheck, Clock } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import { StatCard } from "@/components/StatCard"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -21,7 +22,35 @@ const dashboardData = {
 }
 
 export function Dashboard() {
+  const navigate = useNavigate()
   const occupancyRate = Math.round((dashboardData.occupiedRooms / dashboardData.totalRooms) * 100)
+
+  const quickActions = [
+    {
+      title: "New Check-in",
+      icon: UserCheck,
+      color: "primary",
+      path: "/checkin"
+    },
+    {
+      title: "Process Check-out", 
+      icon: Clock,
+      color: "accent",
+      path: "/checkout"
+    },
+    {
+      title: "Add Room",
+      icon: Bed,
+      color: "hostel-green", 
+      path: "/rooms"
+    },
+    {
+      title: "View Guests",
+      icon: Users,
+      color: "hostel-purple",
+      path: "/guests"
+    }
+  ]
 
   return (
     <div className="space-y-6">
@@ -120,22 +149,16 @@ export function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <button className="flex flex-col items-center gap-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/20 border border-primary/20 hover:shadow-soft transition-all duration-200">
-              <UserCheck className="w-6 h-6 text-primary" />
-              <span className="text-sm font-medium text-foreground">New Check-in</span>
-            </button>
-            <button className="flex flex-col items-center gap-2 p-4 rounded-lg bg-gradient-to-br from-accent/10 to-accent/20 border border-accent/20 hover:shadow-soft transition-all duration-200">
-              <Clock className="w-6 h-6 text-accent" />
-              <span className="text-sm font-medium text-foreground">Process Check-out</span>
-            </button>
-            <button className="flex flex-col items-center gap-2 p-4 rounded-lg bg-gradient-to-br from-hostel-green/10 to-hostel-green/20 border border-hostel-green/20 hover:shadow-soft transition-all duration-200">
-              <Bed className="w-6 h-6 text-hostel-green" />
-              <span className="text-sm font-medium text-foreground">Add Room</span>
-            </button>
-            <button className="flex flex-col items-center gap-2 p-4 rounded-lg bg-gradient-to-br from-hostel-purple/10 to-hostel-purple/20 border border-hostel-purple/20 hover:shadow-soft transition-all duration-200">
-              <Users className="w-6 h-6 text-hostel-purple" />
-              <span className="text-sm font-medium text-foreground">View Guests</span>
-            </button>
+            {quickActions.map((action, index) => (
+              <button
+                key={index}
+                onClick={() => navigate(action.path)}
+                className={`flex flex-col items-center gap-2 p-4 rounded-lg bg-gradient-to-br from-${action.color}/10 to-${action.color}/20 border border-${action.color}/20 hover:shadow-soft transition-all duration-200 hover:scale-105`}
+              >
+                <action.icon className={`w-6 h-6 text-${action.color}`} />
+                <span className="text-sm font-medium text-foreground">{action.title}</span>
+              </button>
+            ))}
           </div>
         </CardContent>
       </Card>
