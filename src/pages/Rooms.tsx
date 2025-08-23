@@ -497,7 +497,7 @@ export default function Rooms() {
                   </div>
                   <div>
                     <p className="text-muted-foreground">Price</p>
-                    <p className="font-medium">${room.price_per_night}/night</p>
+                    <p className="font-medium">₹{room.price_per_night}/night</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Guest</p>
