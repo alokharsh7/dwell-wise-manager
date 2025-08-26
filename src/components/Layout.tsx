@@ -88,8 +88,10 @@ export function Layout({ children, title }: LayoutProps) {
                   />
                 </div>
                 
-                <Button variant="ghost" size="icon">
-                  <User className="h-4 w-4" />
+                <Button variant="ghost" size="icon" asChild>
+                  <a href="/profile">
+                    <User className="h-4 w-4" />
+                  </a>
                 </Button>
               </div>
             </div>

@@ -114,11 +114,11 @@ export default function CheckOut() {
                     </div>
                     <div>
                       <p className="text-muted-foreground">Rate</p>
-                      <p className="font-medium">${guest.pricePerNight}/night</p>
+                      <p className="font-medium">₹{guest.pricePerNight}/night</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Total Amount</p>
-                      <p className="font-semibold text-primary">${calculateTotal(guest)}</p>
+                      <p className="font-semibold text-primary">₹{calculateTotal(guest)}</p>
                     </div>
                   </div>
                 </div>
@@ -186,11 +186,11 @@ export default function CheckOut() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Rate per Night:</span>
-                      <span className="font-medium">${selectedGuest.pricePerNight}</span>
+                      <span className="font-medium">₹{selectedGuest.pricePerNight}</span>
                     </div>
                     <div className="flex justify-between pt-2 border-t border-border">
                       <span className="font-semibold text-foreground">Total Amount:</span>
-                      <span className="font-bold text-lg text-primary">${calculateTotal(selectedGuest)}</span>
+                      <span className="font-bold text-lg text-primary">₹{calculateTotal(selectedGuest)}</span>
                     </div>
                   </div>
                 </div>

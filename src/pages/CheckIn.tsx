@@ -163,7 +163,7 @@ export default function CheckIn() {
                     <div className="space-y-1 text-sm">
                       <p><span className="text-muted-foreground">Type:</span> {room.type}</p>
                       <p><span className="text-muted-foreground">Capacity:</span> {room.capacity} beds</p>
-                      <p><span className="text-muted-foreground">Price:</span> <span className="font-medium">${room.price}/night</span></p>
+                      <p><span className="text-muted-foreground">Price:</span> <span className="font-medium">₹{room.price}/night</span></p>
                     </div>
                   </div>
                 ))}
