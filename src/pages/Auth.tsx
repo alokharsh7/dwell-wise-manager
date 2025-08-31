@@ -308,10 +308,10 @@ export default function Auth() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/admin")}
             className="text-muted-foreground hover:text-foreground"
           >
-            ← Back to Home
+            ← Back to Management Dashboard
           </Button>
         </div>
       </div>
