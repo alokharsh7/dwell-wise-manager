@@ -303,8 +303,16 @@ export default function Auth() {
           </CardContent>
         </Card>
 
-        <div className="text-center mt-6 text-sm text-muted-foreground">
+        <div className="text-center mt-6 text-sm text-muted-foreground space-y-2">
           <p>Admin credentials will be created with admin role automatically</p>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/")}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            ← Back to Home
+          </Button>
         </div>
       </div>
     </div>
