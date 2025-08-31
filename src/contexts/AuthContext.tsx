@@ -38,18 +38,48 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single()
+        .maybeSingle()
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error('Error fetching profile:', error)
         return
       }
 
       if (data) {
         setProfile(data)
+        return
+      }
+
+      // No profile found: create one using current session user metadata
+      try {
+        const { data: userData } = await supabase.auth.getUser()
+        const currentUser = userData?.user
+        const email = currentUser?.email || null
+        const firstName = (currentUser?.user_metadata as any)?.first_name || null
+        const lastName = (currentUser?.user_metadata as any)?.last_name || null
+
+        const { data: inserted, error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            email,
+            first_name: firstName,
+            last_name: lastName,
+          })
+          .select()
+          .single()
+
+        if (insertError) {
+          console.error('Error creating profile:', insertError)
+          return
+        }
+
+        setProfile(inserted)
+      } catch (e) {
+        console.error('Error creating missing profile:', e)
       }
     } catch (error) {
-      console.error('Error fetching profile:', error)
+      console.error('Error fetching/creating profile:', error)
     }
   }
 
@@ -90,8 +120,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => subscription.unsubscribe()
   }, [])
 
+  // Clean up any stale Supabase auth state to prevent limbo states
+  const cleanupAuthState = () => {
+    try {
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+          localStorage.removeItem(key)
+        }
+      })
+      Object.keys(sessionStorage).forEach((key) => {
+        if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+          sessionStorage.removeItem(key)
+        }
+      })
+    } catch {}
+  }
+
   const signIn = async (email: string, password: string) => {
     try {
+      // Ensure clean state before new sign-in
+      cleanupAuthState()
+      try { await supabase.auth.signOut({ scope: 'global' as any }) } catch {}
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -125,7 +175,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut()
+      cleanupAuthState()
+      const { error } = await supabase.auth.signOut({ scope: 'global' as any })
       return { error }
     } catch (error) {
       return { error }

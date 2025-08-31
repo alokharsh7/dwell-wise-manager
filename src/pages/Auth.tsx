@@ -62,7 +62,7 @@ export default function Auth() {
           title: "Success",
           description: "Welcome back! You've been signed in successfully.",
         })
-        navigate("/")
+        window.location.href = "/"
       }
     } catch (error) {
       setError("An unexpected error occurred. Please try again.")
